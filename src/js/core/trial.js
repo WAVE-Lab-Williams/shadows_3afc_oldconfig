@@ -47,7 +47,7 @@ function runSingleTrial(
 
     /*--------------------------- Experiment specific variables ---------------------------*/
     var thisTarget = `${stimFolder}obj${target_object}_sha${target_shadow}.png`;
-    var persistent_prompt = `<div style="position: fixed; top: 50px; left: 50%; transform: translateX(-50%); text-align: center;"></div>`;
+    var persistent_prompt = `<div style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); text-align: center;"><h1>Get ready for the image!</h1></div>`;
 
     var input_number = {
         type: jsPsychSurveyHtmlForm,
@@ -97,7 +97,7 @@ function runSingleTrial(
 
     var mask = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: `${persistent_prompt}<img src="${stimFolder}mask_v3.png" style="width: ${imgWidth}px;">`,
+        stimulus: `<img src="${stimFolder}mask_v3.png" style="width: ${imgWidth}px;">`,
         choices: "NO_KEYS",
         trial_duration: MASK_DISP_TIME,
         data: {
@@ -107,7 +107,7 @@ function runSingleTrial(
 
     var fixation = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: `${persistent_prompt}<img src="${stimFolder}frame.png" style="width: ${1.31*imgWidth}px;">`, //1.31 so frame fits around image
+        stimulus: `<img src="${stimFolder}frame.png" style="width: ${1.31*imgWidth}px;">`, //1.31 so frame fits around image
         choices: "NO_KEYS",
         trial_duration: FIXATION_DISP_TIME,
         data: {
