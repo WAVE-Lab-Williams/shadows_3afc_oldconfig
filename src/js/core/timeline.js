@@ -217,7 +217,7 @@ var memorize_number_trial = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `<p> Memorize this number:</p><h1>6083</h1>`,
         choices: "NO_KEYS",
-        trial_duration: 8000,
+        trial_duration: 5000,
         data: {
             trial_category: 'memorize_number_trial',
         }
@@ -263,6 +263,9 @@ for (var i = 0; i < test_objects.length; i++){
 };
 forPreload.push(`${stimFolder}frame.png`); // preload frame for instructions!
 forPreload.push(`${stimFolder}mask_v3.png`); // preload isi mask for viewing
+//our preload loop doesn't load objC_shaC or objD_shaD so hardcode for ease
+forPreload.push(`${stimFolder}objC_shaC.png`)
+forPreload.push(`${stimFolder}objD_shaD.png`)
 
 /* ------- timeline expt push (*pushExpt ) -------------- */
 for (var elem = 0; elem < 1; elem++) {
