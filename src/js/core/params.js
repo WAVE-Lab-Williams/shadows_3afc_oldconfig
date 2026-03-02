@@ -5,7 +5,8 @@ Defining Parameter Variables
 */
 
 var stimFolder = randomChoice(['src/assets/stimuli/renders/', 'src/assets/stimuli/renders/bevel/'],1)[0];
-
+// var flipped_trial = randomChoice([0, 1], 1)[0]; //0 is not flipped, 1 is reflected across the x axis 
+var flipped_trial = 0;
 
 var runIntro = true;
 var runInstr = true;
@@ -15,7 +16,7 @@ var runPreload = true;
 
 // Defining Core Variables that remain constant
 var PRESTIM_DISP_TIME = 800;
-var FIXATION_DISP_TIME = 2500;
+var FIXATION_DISP_TIME = 3000;
 var MASK_DISP_TIME = 300;
 // var AFC_TIME = 10000
 
