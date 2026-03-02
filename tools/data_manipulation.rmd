@@ -15,8 +15,7 @@ knit: reprex::reprex_render
 
 setwd("C:/Users/mcpro/OneDrive/Documents/WAVE LAB/Code/shadows_3afc/tools")
 
->>>>>>> Stashed changes
-## Quiet tidyverse
+
 
 The tidyverse meta-package is quite chatty at startup, which can be very useful in exploratory, interactive work. It is often less useful in a reprex, so by default, we suppress this.
 
@@ -30,16 +29,115 @@ library(tidyverse)
 
 ```{r}
 table <- read.csv("data/dataframe_answer.csv", header = TRUE)
+V1_3 <- read.csv("data/dataframe_answer_V1_3.csv", header = TRUE)
 ```
 
 ```{r}
 table <- table |> mutate(chosen_object = str_remove_all(chosen_image,"^obj|_sha.*"))
 
-table <- table |> mutate(consistent_object = chosen_object == target_object)
-table <- table |> mutate(consistent_shadow = chosen_object == target_shadow)
-table <- table |> mutate(all_object = consistent_object & consistent_shadow)
+table <- table |> mutate(consistent_object = (chosen_object == target_object))
+table <- table |> mutate(consistent_shadow = (chosen_object == target_shadow))
+table <- table |> mutate(all_object = (consistent_object & consistent_shadow))
 table <- table |> mutate(neither = (chosen_object != target_object) & (chosen_object != target_shadow))
+
+V1_3 <- V1_3 |> mutate(chosen_object = str_remove_all(chosen_image,"^obj|_sha.*"))
+
+V1_3 <- V1_3 |> mutate(consistent_object = chosen_object == target_object)
+V1_3 <- V1_3 |> mutate(consistent_shadow = chosen_object == target_shadow)
+V1_3 <- V1_3 |> mutate(all_object = consistent_object & consistent_shadow)
+V1_3 <- V1_3 |> mutate(neither = (chosen_object != target_object) & (chosen_object != target_shadow))
+
+
+#new 2/20/26 Separate for bevel trials
+
+table <- table |> 
+  mutate(bevel = str_detect(afc_order, "bevel"))
+
 ```
+
+```{r}
+unique(table$afc_order)
+class(table$afc_order)
+```
+
+```{r}
+
+expt1 <- table |>
+  filter(bevel == FALSE)
+
+expt2 <- table |>
+  filter(bevel == TRUE)
+
+sum(table$consistent_shadow)
+
+expt1 |> filter(neither) |> View()
+expt2 |> filter(neither) |> View()
+
+
+```
+
+```{r}
+#EXPT 1 barplot
+expt1 |>
+  pivot_longer(
+    cols = c(consistent_object, consistent_shadow, all_object, neither), 
+    names_to = "Category", 
+    values_to = "Status"
+  ) |>
+  filter(Status == TRUE) |>
+  ggplot(aes(x = Category, fill = Category)) +
+  geom_bar() +
+  scale_x_discrete(labels = c(
+    "neither" = "Neither",
+    "all_object" = "Both",
+    "consistent_object" = "Object",
+    "consistent_shadow" = "Shadow"
+  )) + 
+  scale_fill_discrete(
+    labels = c("neither" = "Neither",
+    "all_object" = "Both",
+    "consistent_object" = "Object",
+    "consistent_shadow" = "Shadow")
+  ) +
+  labs(
+    title = "Experiment 1 (n = 41)",
+    y = "Count"
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r}
+#EXPT 2 barplot
+expt2 |>
+  pivot_longer(
+    cols = c(consistent_object, consistent_shadow, all_object, neither), 
+    names_to = "Category", 
+    values_to = "Status"
+  ) |>
+  filter(Status == TRUE) |>
+  ggplot(aes(x = Category, fill = Category)) +
+  geom_bar() +
+  scale_x_discrete(labels = c(
+    "neither" = "Neither",
+    "all_object" = "Both",
+    "consistent_object" = "Object",
+    "consistent_shadow" = "Shadow"
+  )) + 
+  scale_fill_discrete(
+    labels = c("neither" = "Neither",
+    "all_object" = "Both",
+    "consistent_object" = "Object",
+    "consistent_shadow" = "Shadow")
+  ) +
+  labs(
+    title = "Experiment 2 (n = 39)",
+    y = "Count"
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
 
 
 ```{r}
@@ -218,7 +316,7 @@ table |>
 ```
 
 ```{r}
-table |>
+expt1 |>
   pivot_longer( #join columns
     cols = c(consistent_object, consistent_shadow, all_object, neither), 
     names_to = "Response_Type", 
@@ -226,7 +324,7 @@ table |>
   ) |>  
   filter(Status == TRUE) |> #count true values
   #merge with as factor logic for timing
-  ggplot(aes(x = as.factor(calced_stim_duration_rounded), fill = Response_Type)) +
+  ggplot(aes(x = as.factor(dispImage_duration), fill = Response_Type)) +
   geom_bar(position = "stack") + 
   scale_fill_discrete(
     labels = c(
@@ -237,7 +335,7 @@ table |>
     )
   ) +
   labs(
-    title = "Responses by Stimulus Duration",
+    title = "Experiment 1 By Stim Duration",
     x = "Duration (ms)",
     y = "Count",
     fill = "Category"
@@ -248,8 +346,223 @@ table |>
 
 
 ```{r}
-table |>
-filter()  
+expt2 |>
+  pivot_longer( #join columns
+    cols = c(consistent_object, consistent_shadow, all_object, neither), 
+    names_to = "Response_Type", 
+    values_to = "Status"
+  ) |>  
+  filter(Status == TRUE) |> #count true values
+  #merge with as factor logic for timing
+  ggplot(aes(x = as.factor(dispImage_duration), fill = Response_Type)) +
+  geom_bar(position = "stack") + 
+  scale_fill_discrete(
+    labels = c(
+      "neither" = "Neither",
+      "all_object" = "Both",
+      "consistent_object" = "Object",
+      "consistent_shadow" = "Shadow"
+    )
+  ) +
+  labs(
+    title = "Experiment 2 By Stim Duration",
+    x = "Duration (ms)",
+    y = "Count",
+    fill = "Category"
+  ) +
+  theme_minimal()
+
+
+
+
+```
+
+
+```{r}
+expt1 |>
+  pivot_longer( #join columns
+    cols = c(consistent_object, consistent_shadow, all_object, neither), 
+    names_to = "Response_Type", 
+    values_to = "Status"
+  ) |>  
+  filter(Status == TRUE) |> #count true values
+  #merge with as factor logic for timing
+  ggplot(aes(x = target_object, fill = Response_Type)) +
+  geom_bar(position = "stack") + 
+  scale_fill_discrete(
+    labels = c(
+      "neither" = "Neither",
+      "all_object" = "Both",
+      "consistent_object" = "Object",
+      "consistent_shadow" = "Shadow"
+    )
+  ) +
+  labs(
+    title = "Experiment 1 By Target Object",
+    x = "Object",
+    y = "Count",
+    fill = "Category"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+expt2 |>
+  pivot_longer( #join columns
+    cols = c(consistent_object, consistent_shadow, all_object, neither), 
+    names_to = "Response_Type", 
+    values_to = "Status"
+  ) |>  
+  filter(Status == TRUE) |> #count true values
+  #merge with as factor logic for timing
+  ggplot(aes(x = target_object, fill = Response_Type)) +
+  geom_bar(position = "stack") + 
+  scale_fill_discrete(
+    labels = c(
+      "neither" = "Neither",
+      "all_object" = "Both",
+      "consistent_object" = "Object",
+      "consistent_shadow" = "Shadow"
+    )
+  ) +
+  labs(
+    title = "Experiment 2 By Target Object",
+    x = "Object",
+    y = "Count",
+    fill = "Category"
+  ) +
+  theme_minimal()
+
+
+
+```
+
+
+
+
+```{r}
+expt1 |>
+  mutate(combined = paste(target_object, target_shadow, sep = "_sha")) |>
+  pivot_longer( #join columns
+    cols = c(consistent_object, consistent_shadow, all_object, neither), 
+    names_to = "Response_Type", 
+    values_to = "Status"
+  ) |>  
+  filter(Status == TRUE) |> #count true values
+  #merge with as factor logic for timing
+  ggplot(aes(x = combined, fill = Response_Type)) +
+  geom_bar(position = "stack") + 
+  scale_fill_discrete(
+    labels = c(
+      "neither" = "Neither",
+      "all_object" = "Both",
+      "consistent_object" = "Object",
+      "consistent_shadow" = "Shadow"
+    )
+  ) +
+  labs(
+    title = "Experiment 1 By Study Permutations",
+    x = "Image Presented",
+    y = "Count",
+    fill = "Category"
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+expt2 |>
+  mutate(combined = paste(target_object, target_shadow, sep = "_sha")) |>
+  pivot_longer( #join columns
+    cols = c(consistent_object, consistent_shadow, all_object, neither), 
+    names_to = "Response_Type", 
+    values_to = "Status"
+  ) |>  
+  filter(Status == TRUE) |> #count true values
+  #merge with as factor logic for timing
+  ggplot(aes(x = combined, fill = Response_Type)) +
+  geom_bar(position = "stack") + 
+  scale_fill_discrete(
+    labels = c(
+      "neither" = "Neither",
+      "all_object" = "Both",
+      "consistent_object" = "Object",
+      "consistent_shadow" = "Shadow"
+    )
+  ) +
+  labs(
+    title = "Experiment 2 By Study Permutations",
+    x = "Image Presented",
+    y = "Count",
+    fill = "Category"
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+#V1_3 by object & shadows
+
+V1_3 |>
+  mutate(combined = paste(target_object, target_shadow, sep = "_sha")) |>
+  pivot_longer( #join columns
+    cols = c(consistent_object, consistent_shadow, all_object, neither), 
+    names_to = "Response_Type", 
+    values_to = "Status"
+  ) |>  
+  filter(Status == TRUE) |> #count true values
+  #merge with as factor logic for timing
+  ggplot(aes(x = combined, fill = Response_Type)) +
+  geom_bar(position = "stack") + 
+  scale_fill_discrete(
+    labels = c(
+      "neither" = "Neither",
+      "all_object" = "Both",
+      "consistent_object" = "Object",
+      "consistent_shadow" = "Shadow"
+    )
+  ) +
+  labs(
+    title = "Previous Pilot (V1.3) By Study Permutations",
+    x = "Image Presented",
+    y = "Count",
+    fill = "Category"
+  ) +
+  theme_minimal()
+
+```
+```{r}
+#V1_3 by JUST object
+
+V1_3 |>
+  pivot_longer( #join columns
+    cols = c(consistent_object, consistent_shadow, all_object, neither), 
+    names_to = "Response_Type", 
+    values_to = "Status"
+  ) |>  
+  filter(Status == TRUE) |> #count true values
+  #merge with as factor logic for timing
+  ggplot(aes(x = target_object, fill = Response_Type)) +
+  geom_bar(position = "stack") + 
+  scale_fill_discrete(
+    labels = c(
+      "neither" = "Neither",
+      "all_object" = "Both",
+      "consistent_object" = "Object",
+      "consistent_shadow" = "Shadow"
+    )
+  ) +
+  labs(
+    title = "Previous Pilot (V1.3) By Target Object",
+    x = "Object",
+    y = "Count",
+    fill = "Category"
+  ) +
+  theme_minimal()
+
+
 
 
 

@@ -46,8 +46,9 @@ function runSingleTrial(
     };
 
     /*--------------------------- Experiment specific variables ---------------------------*/
-    var thisTarget = `${stimFolder}obj${target_object}_sha${target_shadow}.png`;
-    var persistent_prompt = `<div style="position: fixed; top: 50px; left: 50%; transform: translateX(-50%); text-align: center;"></div>`;
+    var thisTarget = `${stimFolder}obj${target_object}_sha${target_shadow}.png`;    
+
+    var persistent_prompt = `<div style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); text-align: center;"><h1>Get ready for the image!</h1></div>`;
 
     var input_number = {
         type: jsPsychSurveyHtmlForm,
@@ -74,30 +75,36 @@ function runSingleTrial(
     }; //end var input_number
 
     var dispImage = {
-        type: jsPsychImageKeyboardResponse,
-        stimulus: thisTarget,
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: function(){
+            if(flipped_trial == 1){
+                return `<img src="${thisTarget}" style="transform: scaleX(-1); width: ${imgWidth}px;"></img>`
+            } else {
+                return `<img src="${thisTarget}" style="width: ${imgWidth}px;"></img>`
+            }
+        },            
         choices: "NO_KEYS",
-        stimulus_width: imgWidth,
         trial_duration: stimDuration,
         data: {
             trial_category: 'dispImage' + trialType,
             dispImage_duration: stimDuration,
+            flipped_trial: flipped_trial
         }
     }; // dispImage end
 
-    var prestim = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: `${persistent_prompt}`,
-        choices: "NO_KEYS",
-        trial_duration: PRESTIM_DISP_TIME,
-        data: {
-            trial_category: 'prestim_ISI' + trialType,
-        }
-    };
+    // var prestim = {
+    //     type: jsPsychHtmlKeyboardResponse,
+    //     stimulus: `${persistent_prompt}`,
+    //     choices: "NO_KEYS",
+    //     trial_duration: PRESTIM_DISP_TIME,
+    //     data: {
+    //         trial_category: 'prestim_ISI' + trialType,
+    //     }
+    // };
 
     var mask = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: `${persistent_prompt}<img src="${stimFolder}mask_v3.png" style="width: ${imgWidth}px;">`,
+        stimulus: `<img src="${stimFolder}mask_v3.png" style="width: ${imgWidth}px;">`,
         choices: "NO_KEYS",
         trial_duration: MASK_DISP_TIME,
         data: {
@@ -138,6 +145,7 @@ function runSingleTrial(
             target_shadow: target_shadow,
             dispImage_duration: stimDuration,
             stimFolder: stimFolder,
+            flipped_trial: flipped_trial,
             trial_category: "afc" + trialType
         },
         trial_duration: null, 
@@ -156,7 +164,7 @@ function runSingleTrial(
 
     timelineTrialsToPush.push(if_notFull);
     timelineTrialsToPush.push(cursor_off);
-    timelineTrialsToPush.push(prestim);
+    // timelineTrialsToPush.push(prestim);
     timelineTrialsToPush.push(fixation);
     timelineTrialsToPush.push(dispImage);
     timelineTrialsToPush.push(mask);
