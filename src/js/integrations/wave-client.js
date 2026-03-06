@@ -147,6 +147,7 @@ function processTrialData(data) {
             afc_order: data.afc_order,
             target_object: data.target_object, 
             target_shadow: data.target_shadow,
+            flipped_trial: data.flipped_trial,
             dispImage_duration: data.dispImage_duration,
         };
 
