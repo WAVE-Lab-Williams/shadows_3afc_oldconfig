@@ -217,7 +217,7 @@ var memorize_number_trial = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `<p> Memorize this number:</p><h1>6083</h1>`,
         choices: "NO_KEYS",
-        trial_duration: 5000,
+        trial_duration: 8000,
         data: {
             trial_category: 'memorize_number_trial',
         }
@@ -238,7 +238,7 @@ EXPERIMENT SECTION (*sec_expt)
 /* -------- defining factors && exptdesign (*factors) --------*/
 var poss_objects = ["A", "B", "C", "D"];
 var poss_shadows = ["A", "B", "C", "D"];
-var poss_disp_duration = [700,900];
+var poss_disp_duration = [500, 700, 900];
 
 var test_objects = ["A", "B"]
 var test_shadows = ["A", "B", "C", "D"]
@@ -256,16 +256,13 @@ full_design = full_design.filter(permutation => permutation.object !== permutati
 console.log(full_design);
 
 /* -------  Set Preload Images for Expt (*preload_expt) -------------- */
-for (var i = 0; i < test_objects.length; i++){
-    for (var j = 0; j < test_shadows.length; j++){
+for (var i = 0; i < poss_objects.length; i++){
+    for (var j = 0; j < poss_shadows.length; j++){
         forPreload.push(`${stimFolder}obj${poss_objects[i]}_sha${poss_shadows[j]}.png`)
     }
 };
 forPreload.push(`${stimFolder}frame.png`); // preload frame for instructions!
 forPreload.push(`${stimFolder}mask_v3.png`); // preload isi mask for viewing
-//our preload loop doesn't load objC_shaC or objD_shaD so hardcode for ease
-forPreload.push(`${stimFolder}objC_shaC.png`)
-forPreload.push(`${stimFolder}objD_shaD.png`)
 
 /* ------- timeline expt push (*pushExpt ) -------------- */
 for (var elem = 0; elem < 1; elem++) {

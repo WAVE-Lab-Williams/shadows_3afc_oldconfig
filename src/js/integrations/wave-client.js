@@ -139,7 +139,7 @@ function processTrialData(data) {
             response_time: data.rt,
             accuracy: data.thisAcc,
             correct_response: data.correct_response,
-            trial_duration: data.trial_duration,
+            stimulus_duration: data.trial_duration,
             time_elapsed: data.time_elapsed,
             timestamp: data.timestamp,
             user_agent: data.user_agent,
@@ -147,7 +147,6 @@ function processTrialData(data) {
             afc_order: data.afc_order,
             target_object: data.target_object, 
             target_shadow: data.target_shadow,
-            dispImage_duration: data.dispImage_duration,
         };
 
         logToWave(waveData, data.experiment_id, data.participant_id);
