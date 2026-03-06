@@ -1,5 +1,5 @@
 /* ----------------------------------------
- Functions for text: instructions, debrief, consent, and id form entry (*fxtext)
+ Forcing Redeployment. Functions for text: instructions, debrief, consent, and id form entry (*fxtext)
 -------------------------------------------*/
 
 var welcometext = function() {
